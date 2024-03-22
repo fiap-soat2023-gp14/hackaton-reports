@@ -1,15 +1,18 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import ApplicationModule from '../core/application/application.module';
-import OrderGateway from './adapters/gateway/OrderGateway';
+import ReportGateway from './adapters/gateway/ReportGateway';
 import PaymentApi from './api/PaymentApi';
-import { PaymentController } from './controller/PaymentController';
 import { QueuesModule } from './adapters/external/queues.module';
-import { MessageHandler } from './adapters/external/MessageConsumer';
+import {MongoConnection} from "./adapters/external/MongoConnection";
+import {IConnection} from "./adapters/external/IConnection";
 
 @Module({
   imports: [ApplicationModule, HttpModule, QueuesModule],
-  providers: [ OrderGateway, PaymentController],
+  providers: [ ReportGateway,{
+    provide: IConnection,
+    useClass: MongoConnection,
+  },],
   controllers: [PaymentApi],  
 })
 

@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { SqsModule } from '@ssut/nestjs-sqs';
-import { MessageProducer } from './MessageProducer';
 import * as AWS from 'aws-sdk';
 import { config } from '../../config';
 import { MessageHandler } from './MessageConsumer';
+import ReportGateway from "../gateway/ReportGateway";
+import {IConnection} from "./IConnection";
+import {MongoConnection} from "./MongoConnection";
 
 AWS.config.update({
-    region: config.AWS_REGION, // aws region
-    accessKeyId: config.ACCESS_KEY_ID, // aws access key id
-    secretAccessKey: config.SECRET_ACCESS_KEY, // aws secret access key
+    region: config.AWS_REGION,
 });
 
 
@@ -17,22 +17,20 @@ AWS.config.update({
         SqsModule.register({
             consumers: [
                 {
-                    name: config.AWS_PEDIDOS_QUEUE, 
-                    queueUrl: config.AWS_PEDIDOS_QUEUE_URL,
+                    name: config.AWS_REPORT_QUEUE,
+                    queueUrl: config.AWS_REPORT_QUEUE_URL,
                     region: config.AWS_REGION,
-                },
-            ],
-            producers: [
-                {
-                    name: config.AWS_PEDIDOS_RESPONSE_QUEUE, // name of the queue
-                    queueUrl: config.AWS_PEDIDOS_RESPONSE_QUEUE_URL, 
-                    region: config.AWS_REGION, // url of the queue
                 },
             ],
         }),
     ],
     controllers: [],
-    providers: [MessageHandler, MessageProducer ],
-    exports: [MessageHandler, MessageProducer]
+    providers: [MessageHandler,
+        {
+            provide: IConnection,
+            useClass: MongoConnection,
+        },
+    ],
+    exports: [MessageHandler]
 })
 export class QueuesModule { }

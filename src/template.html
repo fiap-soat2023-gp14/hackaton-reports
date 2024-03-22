@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatorio de Horas</title>
+</head>
+<body>
+<h1>Employee ID {{timeSheetDTO.employeeId}}!</h1>
+
+<h3>Total de horas {{timeSheetDTO.totalHours}}!</h3>
+<p>Lista de Registros</p>
+<table>
+    <thead>
+    <tr>
+        <th>Data</th>
+        <th>Hora</th>
+        <th>Tipo</th>
+    </tr>
+    </thead>
+    <tbody>
+
+        {{#each timeSheetDTO.records}}
+        <tr>
+            <td>{{date}}</td>
+            <td>{{hour}}</td>
+            <td>{{type}}</td>
+        </tr>
+        {{/each}}
+
+
+    </tbody>
+</table>
+</body>
+</html>

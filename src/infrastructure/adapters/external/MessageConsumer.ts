@@ -2,27 +2,26 @@ import { Inject, Injectable } from '@nestjs/common';
 import { SqsMessageHandler } from '@ssut/nestjs-sqs';
 import * as AWS from '@aws-sdk/client-sqs';
 import { config } from '../../config';
-import { PaymentFeedbackDTO } from '../../../core/application/dto/PaymentFeedbackDTO';
-import PaymentAdapter from 'src/core/application/adapter/PaymentAdapter';
-import { PaymentUseCase } from 'src/core/application/usecase/PaymentUseCase';
-import { MessageProducer } from './MessageProducer';
+import { ReportRequestDTO } from '../../../core/application/dto/ReportRequestDTO';
+import { ReportUseCase } from 'src/core/application/usecase/ReportUseCase';
+import {IConnection} from "./IConnection";
+import ReportGateway from "../gateway/ReportGateway";
 
 
 
 @Injectable()
 export class MessageHandler {
 
-    constructor( private  messageProducer: MessageProducer,) { }
+    constructor( @Inject(IConnection) private readonly dbConnection: IConnection) { }
 
-    @SqsMessageHandler(config.AWS_PEDIDOS_QUEUE, false)
+    @SqsMessageHandler(config.AWS_REPORT_QUEUE, false)
     async handleMessage(message: AWS.Message) {
 
         console.log('body', message.Body);
-        const data: PaymentFeedbackDTO = JSON.parse(message.Body) as PaymentFeedbackDTO
-  
+        const data: ReportRequestDTO = JSON.parse(message.Body) as ReportRequestDTO
 
         console.log('data', data);
-        const paymentFeedback = await PaymentAdapter.toDomain(data);
-        await PaymentUseCase.processConsumer(paymentFeedback, this.messageProducer);    
+        const reportUseCase = new ReportUseCase(new ReportGateway(this.dbConnection));
+        await reportUseCase.processReport(data);
     }
 }
