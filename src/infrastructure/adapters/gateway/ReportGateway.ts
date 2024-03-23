@@ -18,8 +18,8 @@ export default class ReportGateway implements IReportGateway {
         const query = {
             "employeeId": reportRequest.employeeId,
             "record": {
-                $gte: new Date(DateUtils.generateStart(reportRequest.month, reportRequest.year)), 
-                $lt: new Date(DateUtils.generateEnd(Number(reportRequest.month), Number(reportRequest.year)))
+                $gte: DateUtils.generateStart(reportRequest.month, reportRequest.year), 
+                $lt: DateUtils.generateEnd(reportRequest.month, reportRequest.year)
             }
         }
 

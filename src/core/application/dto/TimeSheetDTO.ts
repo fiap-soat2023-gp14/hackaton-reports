@@ -2,7 +2,7 @@
 export class TimeSheetDTO {
 
   records: Record[];
-  totalHours: number;
+  totalHours: string;
   employeeId: string;
 
 }
