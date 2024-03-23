@@ -11,13 +11,19 @@ export class ReportUseCase {
 
   public async processReport(
       reportRequest: ReportRequestDTO
-  ): Promise<TimeSheet[]> {
+  ): Promise<void > {
     var timeSheetList = await this.reportGateway.find(reportRequest);
 
-    const timeSheetDTO = await ReportAdapter.toDTO(timeSheetList);
 
-    ReportSendEmail.sendEmail(reportRequest.email,timeSheetDTO);
+    if(timeSheetList.length > 0){
+      console.log('Registros encontrados: ', timeSheetList.length);
+      const timeSheetDTO = await ReportAdapter.toDTO(timeSheetList);
 
-    return Promise.resolve(timeSheetList);
+      ReportSendEmail.sendEmail(reportRequest.email, timeSheetDTO);
+
+    }else{
+      console.log('Nenhum registro encontrado');
+    }
+     return Promise.resolve();
   }
 }
