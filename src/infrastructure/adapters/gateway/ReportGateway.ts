@@ -7,7 +7,7 @@ import DateUtils from "../../DateUtils";
 
 
 export default class ReportGateway implements IReportGateway {
-    COLLECTION_NAME = 'TimeSheet';
+    COLLECTION_NAME = 'TimeRecords';
     private dbConnection: IConnection;
     constructor(database: IConnection) {
         this.dbConnection = database;
