@@ -7,6 +7,7 @@ import {config} from "../../config";
 export class ReportSendEmail {
 
     static async sendEmail(email: string, timeSheetDTO): Promise<void> {
+        console.log('Start Sending email', email);
         const templateHtml = fs.readFileSync('src/template.html', 'utf-8');
         // Compilar o template com Handlebars
         const template = handlebars.compile(templateHtml);
@@ -24,7 +25,6 @@ export class ReportSendEmail {
                 pass: config.EMAIL_PASSWORD,
             },
         });
-
 // Enviar o email
         transporter.sendMail({
             from: config.EMAIL_FROM,

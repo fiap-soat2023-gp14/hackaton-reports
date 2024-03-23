@@ -20,7 +20,6 @@ export class MessageHandler {
         console.log('body', message.Body);
         const data: ReportRequestDTO = JSON.parse(message.Body) as ReportRequestDTO
 
-        console.log('data', data);
         const reportUseCase = new ReportUseCase(new ReportGateway(this.dbConnection));
         await reportUseCase.processReport(data);
     }
