@@ -12,7 +12,7 @@ export class ReportUseCase {
   public async processReport(
       reportRequest: ReportRequestDTO
   ): Promise<TimeSheet[]> {
-    var timeSheetList = await this.reportGateway.find(reportRequest.month, reportRequest.year);
+    var timeSheetList = await this.reportGateway.find(reportRequest);
 
     const timeSheetDTO = await ReportAdapter.toDTO(timeSheetList);
 
