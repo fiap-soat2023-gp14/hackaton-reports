@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import {IReportGateway} from "../../../core/application/repositories/IReportGateway";
-import {IConnection} from "../external/IConnection";
+import { IReportGateway } from "../../../core/application/repositories/IReportGateway";
+import { IConnection } from "../external/IConnection";
 import * as querystring from "querystring";
-import {TimeSheet} from "../../../core/domain/entities/TimeSheet";
+import { TimeSheet } from "../../../core/domain/entities/TimeSheet";
 import DateUtils from "../../DateUtils";
 
 
@@ -13,20 +13,22 @@ export default class ReportGateway implements IReportGateway {
         this.dbConnection = database;
     }
 
-    async find(month: string, year: string): Promise<TimeSheet[]> {
+    async find(reportRequest): Promise<TimeSheet[]> {
 
         const query = {
+            "employeeId": reportRequest.employeeId,
             "record": {
-                $gte:  new Date(DateUtils.generateStart(month, year)), $lt: new Date(DateUtils.generateEnd(Number(month), Number(year)))
+                $gte: new Date(DateUtils.generateStart(reportRequest.month, reportRequest.year)), 
+                $lt: new Date(DateUtils.generateEnd(Number(reportRequest.month), Number(reportRequest.year)))
             }
         }
 
-       console.log('query', query);
-       const timeSheetList: Array<TimeSheet> = await this.dbConnection
-           .getCollection(this.COLLECTION_NAME)
-           .find(query)
-           .toArray();
+        console.log('query', query);
+        const timeSheetList: Array<TimeSheet> = await this.dbConnection
+            .getCollection(this.COLLECTION_NAME)
+            .find(query)
+            .toArray();
 
-       return Promise.resolve(timeSheetList);
-  }
+        return Promise.resolve(timeSheetList);
+    }
 }
